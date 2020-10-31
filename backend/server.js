@@ -28,15 +28,6 @@ mongoose.connect(process.env.MONGODB_URL, {
 
 app.use(bodyParser.json());
 
-
-app.use(express.static(path.join(__dirname, '../client/build')));
-
-app.use(function(req, res) {
-	res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
-});
-
-
-
 const razorpay = new Razorpay({
     key_id: process.env.RAZORPAY_KEY,
     key_secret: process.env.RAZORPAY_SECRET
@@ -96,6 +87,11 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.get('/api/config/paypal', (req, res) => {
     res.send(process.env.PAYPAL_CLIENT_ID);
+});
+
+app.use(express.static(path.join(__dirname, '/../frontend/build')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(`${__dirname}/../frontend/build/index.html`));
 });
 
 app.listen(PORT, () => {
